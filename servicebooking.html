@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Booking System</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #c62d3e;
+            --primary-dark: #a02532;
+            --light-gray: #f8f9fa;
+            --dark-gray: #343a40;
+        }
+        
+        body {
+            background-color: var(--light-gray);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .navbar {
+            background-color: var(--primary-color) !important;
+            padding: 1rem 0;
+        }
+        
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white !important;
+        }
+        
+        .nav-link {
+            color: white !important;
+            margin: 0 0.5rem;
+            padding: 0.5rem 1rem !important;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background-color: var(--primary-dark);
+            color: white !important;
+        }
+        
+        .main-content {
+            min-height: calc(100vh - 76px);
+            padding: 2rem 0;
+        }
+        
+        .auth-container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        .auth-container h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--dark-gray);
+        }
+        
+        .form-control {
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            width: 100%;
+            padding: 0.75rem;
+            font-weight: bold;
+            border-radius: 4px;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+        }
+        
+        .btn-outline-primary {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .service-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .service-image {
+            width: 150px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 1rem;
+        }
+        
+        .service-title {
+            color: #007bff;
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .service-price {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .service-description {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+        
+        .table-container {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: bold;
+        }
+        
+        .status-approved {
+            background-color: #d4edda;
+            color: #155724; 
+        }
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .status-rejected {
+            background-color: #f8d7da; 
+            color: #721c24; 
+        }
+        
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+        
+        .registration-selection {
+            max-width: 500px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .registration-selection h2 {
+            margin-bottom: 1rem;
+        }
+        
+        .registration-selection p {
+            margin-bottom: 2rem;
+            color: #666;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 3rem;
+            color: #999;
+        }
+        
+        .no-data i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+        
+        @media (max-width: 768px) {
+            .service-card .row {
+                text-align: center;
+            }
+            
+            .service-image {
+                margin: 0 auto 1rem;
+                display: block;
+            }
+            
+            .table-responsive {
+                font-size: 0.875rem;
+            }
+            
+            .auth-container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .btn-sm {
+            padding: 0.25rem 0.75rem;
+            font-size: 0.875rem;
+        }
+        
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+        
+        .btn-warning {
+            background-color: #ffc107;
+            border-color: #ffc107;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#" onclick="showPage('home')">Service Booking System</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto" id="navMenu">
+                    <!-- Dynamic navigation items will be inserted here -->
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            
+            <!-- Login Page -->
+            <div id="loginPage" class="page-content">
+                <div class="auth-container">
+                    <h2>Login</h2>
+                    <form>
+                        <input type="email" class="form-control" placeholder="Email" required>
+                        <input type="password" class="form-control" placeholder="Password" required>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="rememberMe">
+                            <label class="form-check-label" for="rememberMe">
+                                Remember me
+                            </label>
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="handleLogin()">Log in</button>
+                    </form>
+                    <p class="text-center mt-3">
+                        Or <a href="#" onclick="showPage('register')" class="text-decoration-none">register now!</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Registration Selection Page -->
+            <div id="registerPage" class="page-content hidden">
+                <div class="registration-selection">
+                    <div class="auth-container">
+                        <h2>Welcome to Service Booking System!</h2>
+                        <p>Choose your user type to get started:</p>
+                        <button class="btn btn-outline-primary" onclick="showPage('registerCompany')">
+                            <i class="fas fa-building me-2"></i>Register as a Company
+                        </button>
+                        <button class="btn btn-outline-primary" onclick="showPage('registerClient')">
+                            <i class="fas fa-user me-2"></i>Register as a Client
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Company Registration Page -->
+            <div id="registerCompanyPage" class="page-content hidden">
+                <div class="auth-container">
+                    <h2>Company Signup</h2>
+                    <form>
+                        <input type="email" class="form-control" placeholder="E-mail" required>
+                        <input type="password" class="form-control" placeholder="Password" required>
+                        <input type="password" class="form-control" placeholder="Confirm Password" required>
+                        <input type="text" class="form-control" placeholder="Name" required>
+                        <input type="text" class="form-control" placeholder="Address" required>
+                        <input type="tel" class="form-control" placeholder="Telephone (Optional)">
+                        <button type="button" class="btn btn-primary" onclick="handleCompanyRegistration()">Register</button>
+                    </form>
+                    <p class="text-center mt-3">
+                        Or <a href="#" onclick="showPage('login')" class="text-decoration-none">login now!</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Client Registration Page -->
+            <div id="registerClientPage" class="page-content hidden">
+                <div class="auth-container">
+                    <h2>Client Signup</h2>
+                    <form>
+                        <input type="email" class="form-control" placeholder="E-mail" required>
+                        <input type="password" class="form-control" placeholder="Password" required>
+                        <input type="password" class="form-control" placeholder="Confirm Password" required>
+                        <input type="text" class="form-control" placeholder="First name" required>
+                        <input type="text" class="form-control" placeholder="Last name" required>
+                        <input type="tel" class="form-control" placeholder="Telephone (Optional)">
+                        <button type="button" class="btn btn-primary" onclick="handleClientRegistration()">Register</button>
+                    </form>
+                    <p class="text-center mt-3">
+                        Or <a href="#" onclick="showPage('login')" class="text-decoration-none">login now!</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Home/Services Page -->
+            <div id="homePage" class="page-content hidden">
+                <div class="search-container">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Enter service to search">
+                        <button class="btn btn-outline-secondary" type="button">Search</button>
+                    </div>
+                </div>
+                
+                <div class="service-card">
+                    <div class="row align-items-center">
+                        <div class="col-md-3">
+                            <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=300&h=200&fit=crop" alt="Decoration" class="service-image w-100">
+                        </div>
+                        <div class="col-md-9">
+                            <div class="service-title">Decoration Of Hall</div>
+                            <div class="service-price">Price: 2000</div>
+                            <div class="service-description">Description: Decoration Of Hall - Company: Test Company</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="service-card">
+                    <div class="row align-items-center">
+                        <div class="col-md-3">
+                            <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=200&fit=crop" alt="Carpet" class="service-image w-100">
+                        </div>
+                        <div class="col-md-9">
+                            <div class="service-title">Carpet fitting service</div>
+                            <div class="service-price">Price: 5000</div>
+                            <div class="service-description">Description: Carpet fitting, along with laminate, LVT and vinyl flooring installation, is a job best left to the experts. We've a little black book of professional fitters throughout the UK. - Company: Test Company</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="service-card">
+                    <div class="row align-items-center">
+                        <div class="col-md-3">
+                            <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=200&fit=crop" alt="Door Lock" class="service-image w-100">
+                        </div>
+                        <div class="col-md-9">
+                            <div class="service-title">Door Lock replacement</div>
+                            <div class="service-price">Price: 300</div>
+                            <div class="service-description">Description: Door lock replacement - Company: Best Decoration</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Company Dashboard -->
+            <div id="companyDashboardPage" class="page-content hidden">
+                <div class="table-container">
+                    <div class="no-data">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h5>No Data</h5>
+                        <p>No bookings found. Services will appear here when clients make bookings.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Create Service Page -->
+            <div id="createServicePage" class="page-content hidden">
+                <div class="auth-container" style="max-width: 600px;">
+                    <h2>Create Ad</h2>
+                    <form>
+                        <div class="mb-3">
+                            <input type="file" class="form-control" accept="image/*">
+                            <small class="form-text text-muted">Choose an image for your service</small>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Service Name" required>
+                        <input type="number" class="form-control" placeholder="Price" required>
+                        <textarea class="form-control" rows="4" placeholder="Description" required></textarea>
+                        <button type="button" class="btn btn-primary">Add</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Manage Services Page -->
+            <div id="manageServicesPage" class="page-content hidden">
+                <div class="service-card">
+                    <div class="row align-items-center">
+                        <div class="col-md-3">
+                            <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=200&fit=crop" alt="Door Lock" class="service-image w-100">
+                        </div>
+                        <div class="col-md-7">
+                            <div class="service-title">Door Lock replacement</div>
+                            <div class="service-price">Price: 200</div>
+                            <div class="service-description">Description: Door Lock replacement</div>
+                        </div>
+                        <div class="col-md-2 text-end">
+                            <button class="btn btn-warning btn-sm mb-2 w-100">Update</button>
+                            <button class="btn btn-danger btn-sm w-100">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Client Bookings Page -->
+            <div id="clientBookingsPage" class="page-content hidden">
+                <div class="table-container">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Service</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Decoration Of Hall</td>
+                                    <td>14/8/2025</td>
+                                    <td><span class="status-badge status-rejected">REJECTED</span></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Decoration Of Hall</td>
+                                    <td>16/8/2025</td>
+                                    <td><span class="status-badge status-approved">APPROVED</span></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Decoration Of Hall</td>
+                                    <td>12/7/2025</td>
+                                    <td><span class="status-badge status-approved">APPROVED</span></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Decoration Of Hall</td>
+                                    <td>08/7/2025</td>
+                                    <td><span class="status-badge status-approved">APPROVED</span></td>
+                                    <td><button class="btn btn-danger btn-sm">Review</button></td>
+                                </tr>
+                                <tr>
+                                    <td>Decoration Of Hall</td>
+                                    <td>10/8/2025</td>
+                                    <td><span class="status-badge status-pending">PENDING</span></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Decoration Of Hall</td>
+                                    <td>22/8/2025</td>
+                                    <td><span class="status-badge status-pending">PENDING</span></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Current user state
+        let currentUser = null;
+        let userType = null; // 'client' or 'company'
+
+        // Navigation configurations
+        const navConfigs = {
+            guest: [
+                { text: 'Home', page: 'home', active: false },
+                { text: 'Register', page: 'register', active: false },
+                { text: 'Login', page: 'login', active: true }
+            ],
+            client: [
+                { text: 'Dashboard', page: 'home', active: false },
+                { text: 'Bookings', page: 'clientBookings', active: true },
+                { text: 'Logout', page: 'logout', active: false }
+            ],
+            company: [
+                { text: 'Dashboard', page: 'companyDashboard', active: true },
+                { text: 'Post Ad', page: 'createService', active: false },
+                { text: 'Ads', page: 'manageServices', active: false },
+                { text: 'Logout', page: 'logout', active: false }
+            ]
+        };
+
+        function updateNavigation() {
+            const navMenu = document.getElementById('navMenu');
+            const config = currentUser ? navConfigs[userType] : navConfigs.guest;
+            
+            navMenu.innerHTML = config.map(item => `
+                <li class="nav-item">
+                    <a class="nav-link ${item.active ? 'active' : ''}" href="#" onclick="handleNavClick('${item.page}')">
+                        ${item.text}
+                    </a>
+                </li>
+            `).join('');
+        }
+
+        function handleNavClick(page) {
+            if (page === 'logout') {
+                logout();
+            } else {
+                showPage(page);
+            }
+        }
+
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page-content').forEach(page => {
+                page.classList.add('hidden');
+            });
+            
+            // Show requested page
+            const targetPage = document.getElementById(pageId + 'Page');
+            if (targetPage) {
+                targetPage.classList.remove('hidden');
+                
+                // Update navigation active state
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.classList.remove('active');
+                });
+                
+                // Find and activate corresponding nav link
+                const activeNavItem = document.querySelector(`[onclick*="${pageId}"]`);
+                if (activeNavItem) {
+                    activeNavItem.classList.add('active');
+                }
+            }
+        }
+
+        function handleLogin() {
+            // Simulate login - in real app, this would validate credentials
+            currentUser = { id: 1, email: 'user@example.com' };
+            userType = 'company'; // Default to company for demo
+            updateNavigation();
+            showPage('companyDashboard');
+        }
+
+        function handleCompanyRegistration() {
+            currentUser = { id: 1, email: 'company@example.com' };
+            userType = 'company';
+            updateNavigation();
+            showPage('companyDashboard');
+        }
+
+        function handleClientRegistration() {
+            currentUser = { id: 1, email: 'client@example.com' };
+            userType = 'client';
+            updateNavigation();
+            showPage('home');
+        }
+
+        function logout() {
+            currentUser = null;
+            userType = null;
+            updateNavigation();
+            showPage('login');
+        }
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            updateNavigation();
+            showPage('login');
+        });
+
+        // Handle responsive navbar collapse
+        document.addEventListener('click', function(e) {
+            const navbar = document.querySelector('.navbar-collapse');
+            const navbarToggler = document.querySelector('.navbar-toggler');
+            
+            if (navbar.classList.contains('show') && !navbar.contains(e.target) && !navbarToggler.contains(e.target)) {
+                const bsCollapse = new bootstrap.Collapse(navbar);
+                bsCollapse.hide();
+            }
+        });
+    </script>
+</body>
+</html>
